@@ -82,7 +82,7 @@ class StudentAgent(RandomAgent):
         """
         score = 0
         # Checking for guaranteed win states.
-        
+
         if(self.checkFours(board, 1)):
             return 100
         elif(self.checkFours(board,2)):
@@ -95,7 +95,7 @@ class StudentAgent(RandomAgent):
         enemyThrees = self.checkThrees(board, 2) * 2
 
         score = twos + threes - enemyTwos - enemyThrees
-
+        a = 0
         return score
 
     def checkFours(self, board, playerNo=1):
