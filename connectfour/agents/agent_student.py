@@ -11,7 +11,6 @@ class StudentAgent(RandomAgent):
         """
         Args:
             board: An instance of `Board` that is the current state of the board.
-
         Returns:
             A tuple of two integers, (row, col)
         """
@@ -63,7 +62,6 @@ class StudentAgent(RandomAgent):
         """
         These are the variables and functions for board objects which may be helpful when creating your Agent.
         Look into board.py for more information/descriptions of each, or to look for any other definitions which may help you.
-
         Board Variables:
             board.width 
             board.height
@@ -72,7 +70,6 @@ class StudentAgent(RandomAgent):
             board.winning_zones
             board.score_array 
             board.current_player_score
-
         Board Functions:
             get_cell_value(row, col)
             try_move(col)
@@ -83,6 +80,29 @@ class StudentAgent(RandomAgent):
             next_state(turn)
             winner()
         """
-				
-        return random.uniform(0, 1)
+        score = 0
+        # Checking for guaranteed win states.
+        
+        if(self.checkFours(board, 1)):
+            return 100
+        elif(self.checkFours(board,2)):
+            return -100
 
+		# Checks twos threes and fours		
+        twos = self.checkTwos(board, 1)
+        enemyTwos = self.checkTwos(board, 2)
+        threes = self.checkThrees(board, 1) * 2
+        enemyThrees = self.checkThrees(board, 2) * 2
+
+        score = twos + threes - enemyTwos - enemyThrees
+
+        return score
+
+    def checkFours(self, board, playerNo=1):
+        return 0
+
+    def checkThrees(self, board,  playerNo=1): 
+        return 0
+
+    def checkTwos(self, board,  playerNo=1):
+        return 0
