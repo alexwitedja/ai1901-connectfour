@@ -63,15 +63,14 @@ The currently available player types are:
 * `StudentAgent` - Template player to complete by students. Currently, is a  `RandomAgent`
 
 
-As an example, we can run:
+As an example to have a `RandomAgent` play against yourself, we can run:
 
 `python -m connectfour.game --player-one RandomAgent --player-two HumanPlayer`
 
-To have a `RandomAgent` play against yourself.
+This next one may be useful for you to run games in quick succession to see how your agent performs against the random agent.
 
-`python -m connectfour.game --player-one HumanPlayer --player-two HardAgent  --fast --auto-close`
+`python -m connectfour.game --player-one Randomlayer --player-two StudentAgent --no-graphics --fast --auto-close`
 
-This may be useful for you to run games in quick succession to see how your agent performs against the random agent.
 
 ### Options
 
