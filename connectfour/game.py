@@ -67,12 +67,13 @@ def validate_args(args):
     p1 = 0
     p2 = 0
 
-    #print("player two = ", args.player_two)
+    print("player one = ", args.player_one)
 
     if args.player_one not in PLAYER_TYPE_MAP:
+        #print("here")
         #print('connectfour.agents.'+args.player_one+'.'+args.player_one)
         #playerTest = my_import('connectfour.agents.'+args.player_one+'.'+args.player_one)
-        
+         
         p1 = locate('connectfour.agents.'+args.player_one)
 
         #RuntimeError("'{}' is not a valid player type".format(args.player_one))
