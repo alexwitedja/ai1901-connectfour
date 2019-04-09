@@ -40,7 +40,7 @@ Run `black` with: `pipenv run black connectfour tests` (You can omit `pipenv run
 
 ### Run
 
-1. `git clone https://github.com/thundergolfer/rmit-connectfour.git`
+1. `git clone https://github.com/stevenkorevaar/ai1901-connectfour.git`
 2. `cd rmit-connectfour`
 3. `pipenv install` (this will install all dependencies needed) 
 4. `pipenv shell` (activate the virtual environment for the project/directory)
@@ -63,15 +63,14 @@ The currently available player types are:
 * `StudentAgent` - Template player to complete by students. Currently, is a  `RandomAgent`
 
 
-As an example, we can run:
+As an example to have a `RandomAgent` play against yourself, we can run:
 
 `python -m connectfour.game --player-one RandomAgent --player-two HumanPlayer`
 
-To have a `RandomAgent` play against yourself.
+This next one may be useful for you to run games in quick succession to see how your agent performs against the random agent.
 
 `python -m connectfour.game --player-one RandomAgent --player-two StudentAgent --no-graphics --fast --auto-close`
 
-This may be useful for you to run games in quick succession to see how your agent performs against the random agent.
 
 ### Options
 

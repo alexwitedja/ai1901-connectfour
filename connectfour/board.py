@@ -90,7 +90,7 @@ class Board(object):
         Returns true when the game is finished, otherwise false.
         """
         # check for a winner:
-        if (self.winner() != 0):
+        if (self.winner() == 0):
             return False
 
         for i in range(len(self.board[0])):
@@ -158,6 +158,7 @@ class Board(object):
         if row_winner:
             return row_winner
         col_winner = self._check_columns()
+        #print("col winner = ", col_winner)
         if col_winner:
             return col_winner
         diag_winner = self._check_diagonals()

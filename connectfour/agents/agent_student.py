@@ -41,7 +41,11 @@ class StudentAgent(RandomAgent):
         moves = []
 
         for move in valid_moves:
-            next_state = board.next_state(self.id, move[1])
+            if depth % 2 == 1:
+                next_state = board.next_state(self.id % 2 + 1, move[1])
+            else:
+                next_state = board.next_state(self.id, move[1])
+                
             moves.append( move )
             vals.append( self.dfMiniMax(next_state, depth + 1) )
 
