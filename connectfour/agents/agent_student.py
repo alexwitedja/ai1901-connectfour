@@ -121,9 +121,6 @@ class StudentAgent(RandomAgent):
         """
         score = self.scoreBoard(board, 1)
 
-        if score == 0:
-            score = random.randint(1,9)
-
         return score
 
     def scoreValues(self, coor_values = [], player_no = 1):
@@ -135,12 +132,14 @@ class StudentAgent(RandomAgent):
             player_no = 2
         score = 0
 
+        #self.id tells which player we are.
+
         if coor_values.count(player_no) == 4:
             score += 100
         elif coor_values.count(player_no) == 3 and coor_values.count(0) == 1:
-            score += 10
+            score += 20
         elif coor_values.count(player_no) == 2 and coor_values.count(0) == 2:
-            score += 5
+            score += 7
 
         if coor_values.count(enemy) == 3 and coor_values.count(0) == 1:
             score -= 100  # Blocks if enemy wins.
@@ -152,7 +151,13 @@ class StudentAgent(RandomAgent):
 
         score = 0
         coor_values = []  # Saves 4 coordinate values.
-        count = 0
+
+        # First few moves should be center col. More possibilities in the center.
+        # Checking how many pieces are in the center column.
+        coor_center = []
+        for i in range(board.height):
+            coor_center.append(board.get_cell_value(board.height - 1 - i, board.width//2))
+        score += coor_center.count(player_no) * 3
 
         # Horizontal
         for row in range(board.height):
@@ -181,7 +186,6 @@ class StudentAgent(RandomAgent):
 
                 score += self.scoreValues(coor_values, player_no)
                 del coor_values[:]
-
 
         # Left right downward
         for row in range(board.height - 3):
