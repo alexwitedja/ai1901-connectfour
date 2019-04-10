@@ -6,7 +6,7 @@ import random
 class StudentAgent(RandomAgent):
     def __init__(self, name):
         super().__init__(name)
-        self.MaxDepth = 1
+        self.MaxDepth = 4
 
     def get_move(self, board):
         """
@@ -23,16 +23,17 @@ class StudentAgent(RandomAgent):
         for move in valid_moves:
             next_state = board.next_state(self.id, move[1])
             moves.append( move )
-            vals.append( self.dfMiniMax(next_state, 1) )
+            # vals.append( self.alphabeta(next_state, self.MaxDepth, -100000, 100000))
+            vals.append( self.dfMiniMax(next_state, self.MaxDepth) )
 
         print(vals)
         bestMove = moves[vals.index( max(vals) )]
         return bestMove
 
-    def dfMiniMax(self, board, depth, alpha, beta):
+    def dfMiniMax(self, board, depth):
         # Goal return column with maximized scores of all possible next states
         # Number of possible states is the number of columns
-        # Alpha beta pruning value of alpha -inf beta inf.
+        # Alpha beta pruning
 
         if depth == self.MaxDepth:
             return self.evaluateBoardState(board)
@@ -46,11 +47,11 @@ class StudentAgent(RandomAgent):
                 next_state = board.next_state(self.id % 2 + 1, move[1])
             else:
                 next_state = board.next_state(self.id, move[1])
-                
+
             moves.append( move )
             vals.append( self.dfMiniMax(next_state, depth + 1) )
 
-        
+
         if depth % 2 == 1:
             bestVal = min(vals)
         else:
@@ -58,28 +59,28 @@ class StudentAgent(RandomAgent):
 
         return bestVal
     
-    def alphabeta(self, board, depth, alpha, beta, maximizingPlayer=1):
+    def alphabeta(self, board, depth, alpha, beta):
         
-        #inital call callbeta(origin, depth, -inf, +inf, 1)
+        # Initial call call(origin, depth, -inf, +inf)
+        # Alpha beta pruning
+
+        if depth == self.MaxDepth:
+            return self.evaluateBoardState(board)
 
         valid_moves = board.valid_moves()
 
-        if depth == 0:
-            return self.evaluateBoardState(board)
-        if maximizingPlayer == 1:
-            value = alpha
-            for move in valid_moves:
-                next_state = board.next_state(self.id, move[1])
-                value = max([value, self.alphabeta(next_state, depth - 1, alpha, beta, 1)])
+        for move in valid_moves:
+            if depth % 2 == 1:  # Maximizing
+                value = alpha
+                next_state = board.next_state(self.id % 2 + 1, move[1])
+                value = max(value, self.alphabeta(next_state, depth + 1, alpha, beta))
                 alpha = max(alpha, value)
                 if alpha >= beta:
                     break
-            return value
-        else:
-            value = beta
-            for move in valid_moves:
+            else:  # Minimizing
+                value = beta
                 next_state = board.next_state(self.id, move[1])
-                value = min([value, self.alphabeta(next_state, depth - 1, alpha, beta, 2)])
+                value = min(value, self.alphabeta(next_state, depth + 1, alpha, beta))
                 beta = min(beta, value)
                 if alpha >= beta:
                     break
@@ -125,22 +126,20 @@ class StudentAgent(RandomAgent):
 
         return score
 
-    def scoreValues(self, coor_values = [], playerNo = 1):
+    def scoreValues(self, coor_values = [], player_no = 1):
 
-        enemy = 0
-
-        if playerNo == 1:
+        if player_no == 1:
             enemy = 2
         else:
             enemy = 1
-            playerNo = 2
+            player_no = 2
         score = 0
 
-        if coor_values.count(playerNo) == 4:
+        if coor_values.count(player_no) == 4:
             score += 100
-        elif coor_values.count(playerNo) == 3 and coor_values.count(0) == 1:
+        elif coor_values.count(player_no) == 3 and coor_values.count(0) == 1:
             score += 10
-        elif coor_values.count(playerNo) == 2 and coor_values.count(0) == 2:
+        elif coor_values.count(player_no) == 2 and coor_values.count(0) == 2:
             score += 5
 
         if coor_values.count(enemy) == 3 and coor_values.count(0) == 1:
@@ -149,7 +148,7 @@ class StudentAgent(RandomAgent):
         return score
 
 
-    def scoreBoard(self, board, playerNo=1):
+    def scoreBoard(self, board, player_no=1):
 
         score = 0
         coor_values = []  # Saves 4 coordinate values.
@@ -161,7 +160,7 @@ class StudentAgent(RandomAgent):
                 for i in range(4):
                     coor_values.append(board.get_cell_value(row, col + i))
 
-                score += self.scoreValues(coor_values, playerNo)
+                score += self.scoreValues(coor_values, player_no)
                 del coor_values[:]
 
         # Vertical
@@ -170,7 +169,7 @@ class StudentAgent(RandomAgent):
                 for i in range(4):
                     coor_values.append(board.get_cell_value(row + 3 - i, col))
 
-                score += self.scoreValues(coor_values, playerNo)
+                score += self.scoreValues(coor_values, player_no)
                 del coor_values[:]
 
         # Diagonals
@@ -180,7 +179,7 @@ class StudentAgent(RandomAgent):
                 for i in range(4):
                     coor_values.append(board.get_cell_value(row + 3 - i, col + i))
 
-                score += self.scoreValues(coor_values, playerNo)
+                score += self.scoreValues(coor_values, player_no)
                 del coor_values[:]
 
 
@@ -190,7 +189,7 @@ class StudentAgent(RandomAgent):
                 for i in range(4):
                     coor_values.append(board.get_cell_value(row + i, col + i))
 
-                score += self.scoreValues(coor_values, playerNo)
+                score += self.scoreValues(coor_values, player_no)
                 del coor_values[:]
 
         return score
