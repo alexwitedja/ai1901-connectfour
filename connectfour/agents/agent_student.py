@@ -29,10 +29,11 @@ class StudentAgent(RandomAgent):
         bestMove = moves[vals.index( max(vals) )]
         return bestMove
 
-    def dfMiniMax(self, board, depth):
+    def dfMiniMax(self, board, depth, alpha, beta):
         # Goal return column with maximized scores of all possible next states
         # Number of possible states is the number of columns
-        
+        # Alpha beta pruning value of alpha -inf beta inf.
+
         if depth == self.MaxDepth:
             return self.evaluateBoardState(board)
 
@@ -79,7 +80,7 @@ class StudentAgent(RandomAgent):
             for move in valid_moves:
                 next_state = board.next_state(self.id, move[1])
                 value = min([value, self.alphabeta(next_state, depth - 1, alpha, beta, 2)])
-                beta = min(beta,value)
+                beta = min(beta, value)
                 if alpha >= beta:
                     break
             return value
@@ -123,37 +124,74 @@ class StudentAgent(RandomAgent):
             score = random.randint(1,9)
 
         return score
-    
-    def scoreBoard(self, board, playerno=1):
+
+    def scoreValues(self, coor_values = [], playerNo = 1):
+
+        enemy = 0
+
+        if playerNo == 1:
+            enemy = 2
+        else:
+            enemy = 1
+            playerNo = 2
+        score = 0
+
+        if coor_values.count(playerNo) == 4:
+            score += 100
+        elif coor_values.count(playerNo) == 3 and coor_values.count(0) == 1:
+            score += 10
+        elif coor_values.count(playerNo) == 2 and coor_values.count(0) == 2:
+            score += 5
+
+        if coor_values.count(enemy) == 3 and coor_values.count(0) == 1:
+            score -= 100  # Blocks if enemy wins.
+
+        return score
+
+
+    def scoreBoard(self, board, playerNo=1):
 
         score = 0
+        coor_values = []  # Saves 4 coordinate values.
         count = 0
+
         # Horizontal
         for row in range(board.height):
-            for col in range(board.width):
-                if board.get_cell_value(row, col) == playerno:
-                    count += 1
-                    if count == 4:
-                        score += 100
-                    elif count == 3 and board.valid_move(row, col+1):
-                        score += 10
-                else:
-                    count = 0
+            for col in range(board.width - 3):
+                for i in range(4):
+                    coor_values.append(board.get_cell_value(row, col + i))
+
+                score += self.scoreValues(coor_values, playerNo)
+                del coor_values[:]
 
         # Vertical
         for col in range(board.width):
-            for row in range(board.height):
-                if board.get_cell_value(row, col) == playerno:
-                    count += 1
-                    if count == 4:
-                        score += 100
-                    elif count == 3 and board.valid_move(row-3, col):
-                        score += 10
-                else:
-                    count = 0
+            for row in range(board.height - 3):
+                for i in range(4):
+                    coor_values.append(board.get_cell_value(row + 3 - i, col))
+
+                score += self.scoreValues(coor_values, playerNo)
+                del coor_values[:]
 
         # Diagonals
-        # Forward diagonal
+        # Left right upward
+        for row in range(board.height - 3):
+            for col in range(board.width - 3):
+                for i in range(4):
+                    coor_values.append(board.get_cell_value(row + 3 - i, col + i))
+
+                score += self.scoreValues(coor_values, playerNo)
+                del coor_values[:]
+
+
+        # Left right downward
+        for row in range(board.height - 3):
+            for col in range(board.width - 3):
+                for i in range(4):
+                    coor_values.append(board.get_cell_value(row + i, col + i))
+
+                score += self.scoreValues(coor_values, playerNo)
+                del coor_values[:]
 
         return score
 
